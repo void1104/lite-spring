@@ -1,5 +1,6 @@
 package cn.pjx.springlite.beans.factory.support;
 
+import cn.pjx.springlite.beans.BeanException;
 import cn.pjx.springlite.beans.factory.BeanFactory;
 import cn.pjx.springlite.beans.factory.config.BeanDefinition;
 
@@ -11,13 +12,18 @@ import cn.pjx.springlite.beans.factory.config.BeanDefinition;
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
 
     @Override
-    public Object getBean(String name) {
+    public Object getBean(String name) throws BeanException {
         return doGetBean(name, null);
     }
 
     @Override
-    public Object getBean(String name, Object... args) {
+    public Object getBean(String name, Object... args) throws BeanException {
         return doGetBean(name, args);
+    }
+
+    @Override
+    public <T> T getBean(String name, Class<T> requiredType) throws BeanException {
+        return (T) getBean(name);
     }
 
     protected Object doGetBean(String name, final Object[] args) {

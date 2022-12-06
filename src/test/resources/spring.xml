@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+    <bean id="userDao" class="cn.pjx.springlite.UserDao"/>
+
+    <bean id="userService" class="cn.pjx.springlite.UserService">
+        <property name="username" value="A"/>
+        <property name="userDao" ref="userDao"/>
+    </bean>
+
+</beans>

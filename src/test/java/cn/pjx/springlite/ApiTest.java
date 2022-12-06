@@ -5,6 +5,7 @@ import cn.pjx.springlite.beans.PropertyValues;
 import cn.pjx.springlite.beans.factory.config.BeanDefinition;
 import cn.pjx.springlite.beans.factory.config.BeanReference;
 import cn.pjx.springlite.beans.factory.support.DefaultListableBeanFactory;
+import cn.pjx.springlite.beans.factory.xml.XmlBeanDefinitionReader;
 import org.junit.Test;
 
 public class ApiTest {
@@ -49,6 +50,8 @@ public class ApiTest {
 
     /**
      * 测试03
+     * <p>
+     * - 实现初始化实例bean时，同时给bean注入对象属性.
      */
     @Test
     public void test3_forInject() {
@@ -67,5 +70,24 @@ public class ApiTest {
         // 5.获取bean，获取过程中除了实例化bean，还会注入bean的属性
         UserService userService1 = (UserService) beanFactory.getBean("userService", "A");
         assert userService1.queryUserInfo().equals("A's info");
+    }
+
+    /**
+     * 测试04
+     * <p>
+     * - 实现通过xml配置文件去初始化bean定义
+     */
+    @Test
+    public void test4_forXmlReader() {
+        // 1.初始化BeanFactory
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+
+        // 2.手动读取配置文件
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        reader.loadBeanDefinitions("classpath:spring.xml");
+
+        UserService userService = beanFactory.getBean("userService", UserService.class);
+        String s = userService.queryUserInfo();
+        assert s.equals("A's info");
     }
 }
