@@ -1,4 +1,4 @@
-package cn.pjx.springlite.beans.core.io;
+package cn.pjx.springlite.core.io;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package cn.pjx.springlite.beans.core.io;
+package cn.pjx.springlite.core.io;
 
 import cn.hutool.core.lang.Assert;
 import cn.pjx.springlite.beans.util.ClassUtils;

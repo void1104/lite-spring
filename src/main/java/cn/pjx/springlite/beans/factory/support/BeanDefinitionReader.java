@@ -1,9 +1,9 @@
 package cn.pjx.springlite.beans.factory.support;
 
 import cn.pjx.springlite.beans.BeanException;
-import cn.pjx.springlite.beans.core.io.Resource;
-import cn.pjx.springlite.beans.core.io.ResourceLoader;
 import cn.pjx.springlite.beans.factory.config.BeanDefinitionRegistry;
+import cn.pjx.springlite.core.io.Resource;
+import cn.pjx.springlite.core.io.ResourceLoader;
 
 /**
  * Bean定义读取器
@@ -34,4 +34,9 @@ public interface BeanDefinitionReader {
      * 从指定location加载bean定义数据
      */
     void loadBeanDefinitions(String location) throws BeanException;
+
+    /**
+     * 从多个location加载bean定义数据
+     */
+    void loadBeanDefinitions(String... locations) throws BeanException;
 }

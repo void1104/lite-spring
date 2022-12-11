@@ -4,12 +4,12 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
 import cn.pjx.springlite.beans.BeanException;
 import cn.pjx.springlite.beans.PropertyValue;
-import cn.pjx.springlite.beans.core.io.Resource;
-import cn.pjx.springlite.beans.core.io.ResourceLoader;
 import cn.pjx.springlite.beans.factory.config.BeanDefinition;
 import cn.pjx.springlite.beans.factory.config.BeanDefinitionRegistry;
 import cn.pjx.springlite.beans.factory.config.BeanReference;
 import cn.pjx.springlite.beans.factory.support.AbstractBeanDefinitionReader;
+import cn.pjx.springlite.core.io.Resource;
+import cn.pjx.springlite.core.io.ResourceLoader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -21,6 +21,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
     public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) {
         super(registry);
+    }
+
+    public XmlBeanDefinitionReader(BeanDefinitionRegistry registry, ResourceLoader resourceLoader) {
+        super(registry, resourceLoader);
     }
 
     @Override
@@ -46,6 +50,13 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         ResourceLoader resourceLoader = getResourceLoader();
         Resource resource = resourceLoader.getResource(location);
         loadBeanDefinitions(resource);
+    }
+
+    @Override
+    public void loadBeanDefinitions(String... locations) throws BeanException {
+        for (String location : locations) {
+            loadBeanDefinitions(location);
+        }
     }
 
     /**

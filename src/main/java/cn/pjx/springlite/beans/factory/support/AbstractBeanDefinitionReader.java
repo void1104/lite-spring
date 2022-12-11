@@ -1,8 +1,8 @@
 package cn.pjx.springlite.beans.factory.support;
 
-import cn.pjx.springlite.beans.core.io.DefaultResourceLoader;
-import cn.pjx.springlite.beans.core.io.ResourceLoader;
 import cn.pjx.springlite.beans.factory.config.BeanDefinitionRegistry;
+import cn.pjx.springlite.core.io.DefaultResourceLoader;
+import cn.pjx.springlite.core.io.ResourceLoader;
 
 public abstract class AbstractBeanDefinitionReader implements BeanDefinitionReader {
 

@@ -1,4 +1,4 @@
-package cn.pjx.springlite.beans.core.io;
+package cn.pjx.springlite.core.io;
 
 import cn.hutool.core.lang.Assert;
 
@@ -8,7 +8,7 @@ import java.net.URL;
 /**
  * 默认资源读取器
  */
-public class DefaultResourceLoader implements ResourceLoader{
+public class DefaultResourceLoader implements ResourceLoader {
 
     @Override
     public Resource getResource(String location) {

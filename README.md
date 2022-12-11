@@ -4,6 +4,13 @@
 
 ### 核心类的解释和作用
  - BeanDefinition：spring中bean的定义，存放类的一些基础信息 
+ - BeanFactory：bean工厂类的最上级接口，定义了bean工厂的框架
+ - BeanFactoryPostProcessor
+   - 由Spring提供的容器扩展机制，允许在Bean注册后但未实例化前，对BeanDefinition进行修改.
+   - 用户可实现该接口并自定义逻辑，spring会扫描所有实现了该接口的类，并在实例化前调用实现类的方法.
+ - BeanPostProcessor
+   - 也是Spring提供的容器扩展机制，但它是在对象实例化后修改Bean对象，也可以替换Bean对象.
+   - 用户可实现该接口并自定义逻辑，spring会扫描所有实现了该接口的类，并在实例化前调用其beforeXXX和afterXXX方法.
 
 
 
@@ -23,3 +30,7 @@
   - 定义了`Resource`和`ResourceLoader`概念，可以从指定路径的配置文件、资源中读取类定义的信息
   - 在`BeanDefinitionRegistry`中引入`BeanDefinitionReader`及其子类，为其提供了从配置文件读取bean定义的能力.
   - `BeanDefinitionReader`负责解析从Resource获取的数据，将其转换为`beanDefinition`并注册.
+- step04:
+  - 做的事情：实现应用上下文允许用户在Bean对象从注册到实例化过程中执行自定义操作（修改bean定义信息）
+  - 引入了`BeanFactoryPostProcessor`和`BeanPostProcessor`组件，用于实现bean的自定义扩展.
+  - `DefaultListBeanFactory`类是面向spring内部设计的，所以要向上封装一层`ApplicationContext`的概念供用户使用.

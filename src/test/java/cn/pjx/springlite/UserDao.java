@@ -11,6 +11,7 @@ public class UserDao {
         db.put("A", "A's info");
         db.put("B", "B's info");
         db.put("C", "C's info");
+        db.put("void", "void's info");
     }
 
     public String search(String name) {
