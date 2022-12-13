@@ -1,6 +1,9 @@
 package cn.pjx.springlite;
 
-public class UserService {
+import cn.pjx.springlite.beans.factory.DisposableBean;
+import cn.pjx.springlite.beans.factory.InitializingBean;
+
+public class UserService implements InitializingBean, DisposableBean {
 
     private String username;
 
@@ -27,5 +30,15 @@ public class UserService {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("userService is destroy!!!");
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("userService is init!!!");
     }
 }

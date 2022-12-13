@@ -129,4 +129,17 @@ public class ApiTest {
         // 这里本该打印A's info，但因为BeanFactoryPostProcessor修改了bean定义，所以打印了void‘s info
         System.out.println("测试结果：" + result);
     }
+
+    /**
+     * 测试06
+     * - 引入了InitialBean和DisposableBean
+     */
+    @Test
+    public void test6_forInitAndDestroy() {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring.xml");
+
+        UserService userService = context.getBean("userService", UserService.class);
+        String s = userService.queryUserInfo();
+        System.out.println(s);
+    }
 }

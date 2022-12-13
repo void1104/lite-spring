@@ -34,3 +34,9 @@
   - 做的事情：实现应用上下文允许用户在Bean对象从注册到实例化过程中执行自定义操作（修改bean定义信息）
   - 引入了`BeanFactoryPostProcessor`和`BeanPostProcessor`组件，用于实现bean的自定义扩展.
   - `DefaultListBeanFactory`类是面向spring内部设计的，所以要向上封装一层`ApplicationContext`的概念供用户使用.
+- step05:
+  - 做的事情：引入`InitializingBean`和`DisposableBean`俩接口，实现Bean的一些自定义初始化逻辑.
+  - Spring的初始化方法其实就是实现了`InitializingBean`接口并调用其接口实现的方法，所以初始化顺序会比Java的初始化函数慢.
+  - 在`AbstractAutowireCapableBeanFactory`的createBean方法中，执行初始化方法`invokeInitMethod`的调用
+  - 用适配器模式引入`DisposableBean`在`DefaultSingletonBeanRegistry`中存放需要执行销毁的bean.
+  - 销毁的bean在`AbstractAutowireCapableBeanFactory`中进行注册，在`AbstractApplicationContext`整体执行逻辑中，执行销毁逻辑

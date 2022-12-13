@@ -28,7 +28,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         // 4.BeanPostProcessor需要提前于其他Bean,对象实例化之前执行注册操作
         registerBeanPostProcessors(beanFactory);
 
-        // 5.提前实例化单例对象
+        // 5.容器启动时，提前实例化全部单例对象
         beanFactory.preInstantiateSingletons();
     }
 
@@ -84,5 +84,15 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     @Override
     public String[] getBeanDefinitionNames() {
         return getBeanFactory().getBeanDefinitionNames();
+    }
+
+    @Override
+    public void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+    }
+
+    @Override
+    public void close() {
+        getBeanFactory().destroySingletons();
     }
 }

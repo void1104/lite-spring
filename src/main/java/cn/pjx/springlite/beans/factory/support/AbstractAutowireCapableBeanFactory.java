@@ -1,15 +1,19 @@
 package cn.pjx.springlite.beans.factory.support;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.pjx.springlite.beans.BeanException;
 import cn.pjx.springlite.beans.PropertyValue;
 import cn.pjx.springlite.beans.PropertyValues;
+import cn.pjx.springlite.beans.factory.DisposableBean;
+import cn.pjx.springlite.beans.factory.InitializingBean;
 import cn.pjx.springlite.beans.factory.config.AutowireCapableBeanFactory;
 import cn.pjx.springlite.beans.factory.config.BeanDefinition;
 import cn.pjx.springlite.beans.factory.config.BeanPostProcessor;
 import cn.pjx.springlite.beans.factory.config.BeanReference;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 /**
  * 装配工厂类
@@ -36,7 +40,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             throw new BeanException("create bean:[" + beanName + "] failed", e);
         }
 
-        // 添加单例
+        // 注册实现了DisposableBean的需要销毁逻辑的Bean对象
+        registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
+
+        // 注册单例
         registerSingleton(beanName, bean);
         return bean;
     }
@@ -101,11 +108,39 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         // 1.执行before处理
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
 
-        // TODO 2.调用初始化函数 invokeInitMethods();
+        // 2.调用用户定义初始化函数
+        try {
+            invokeInitMethod(wrappedBean, beanDefinition);
+        } catch (Exception e) {
+            throw new BeanException("Invocation of init method of bean[" + beanName + "] failed", e);
+        }
 
         // 2.执行after处理
         wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
         return wrappedBean;
+    }
+
+    /**
+     * 由Spring托管的Bean对象初始化防范
+     */
+    private void invokeInitMethod(Object bean, BeanDefinition beanDefinition) throws Exception {
+        // 实现了InitializingBean接口，才调用初始化方法
+        if (bean instanceof InitializingBean) {
+            ((InitializingBean) bean).afterPropertiesSet();
+        } else {
+            // 或者xml中配置了初始化方法名称
+            String initMethodName = beanDefinition.getInitMethodName();
+            if (StrUtil.isNotEmpty(initMethodName)) {
+                Method method = beanDefinition.getBeanClass().getMethod(initMethodName);
+                method.invoke(bean);
+            }
+        }
+    }
+
+    protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
+        if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
+            registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanDefinition));
+        }
     }
 
     @Override

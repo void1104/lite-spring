@@ -1,7 +1,6 @@
 package cn.pjx.springlite.beans.factory.support;
 
 import cn.pjx.springlite.beans.BeanException;
-import cn.pjx.springlite.beans.factory.BeanFactory;
 import cn.pjx.springlite.beans.factory.config.BeanDefinition;
 import cn.pjx.springlite.beans.factory.config.BeanPostProcessor;
 import cn.pjx.springlite.beans.factory.config.ConfigurableBeanFactory;

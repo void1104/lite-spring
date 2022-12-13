@@ -17,4 +17,12 @@ public class UserDao {
     public String search(String name) {
         return db.get(name);
     }
+
+    public void init() {
+        System.out.println("userDao is init!!!");
+    }
+
+    public void destroy() {
+        System.out.println("userDao is destroy!!!");
+    }
 }
