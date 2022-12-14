@@ -4,6 +4,7 @@ import cn.pjx.springlite.beans.BeanException;
 import cn.pjx.springlite.beans.factory.config.BeanDefinition;
 import cn.pjx.springlite.beans.factory.config.BeanPostProcessor;
 import cn.pjx.springlite.beans.factory.config.ConfigurableBeanFactory;
+import cn.pjx.springlite.beans.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,11 @@ import java.util.List;
  * - 仅负责获取bean的能力
  */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+
+    /**
+     * 加载bean的ClassLoader
+     */
+    private final ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
     /**
      * AbstractBeanFactory负责获取bean的流程定义，同时也承接beanPostProcessor的注册表
@@ -56,5 +62,9 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     public List<BeanPostProcessor> getBeanPostProcessors() {
         return this.beanPostProcessors;
+    }
+
+    public ClassLoader getBeanClassLoader() {
+        return this.beanClassLoader;
     }
 }

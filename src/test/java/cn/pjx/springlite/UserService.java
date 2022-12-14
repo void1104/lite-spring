@@ -1,13 +1,23 @@
 package cn.pjx.springlite;
 
-import cn.pjx.springlite.beans.factory.DisposableBean;
-import cn.pjx.springlite.beans.factory.InitializingBean;
+import cn.pjx.springlite.beans.BeanException;
+import cn.pjx.springlite.beans.factory.*;
+import cn.pjx.springlite.context.ApplicationContext;
+import cn.pjx.springlite.context.ApplicationContextAware;
 
-public class UserService implements InitializingBean, DisposableBean {
+import java.util.PrimitiveIterator;
+
+public class UserService implements InitializingBean, DisposableBean, BeanFactoryAware, BeanNameAware, ApplicationContextAware {
 
     private String username;
 
     private UserDao userDao;
+
+    private BeanFactory beanFactory;
+
+    private String beanName;
+
+    private ApplicationContext applicationContext;
 
     UserService() {
 
@@ -40,5 +50,32 @@ public class UserService implements InitializingBean, DisposableBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         System.out.println("userService is init!!!");
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeanException {
+        this.beanFactory = beanFactory;
+    }
+
+    @Override
+    public void setBeanName(String beanName) {
+        this.beanName = beanName;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeanException {
+        this.applicationContext = applicationContext;
+    }
+
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
+    }
+
+    public String getBeanName() {
+        return beanName;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 }

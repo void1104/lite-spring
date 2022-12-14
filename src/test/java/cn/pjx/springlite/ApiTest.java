@@ -142,4 +142,19 @@ public class ApiTest {
         String s = userService.queryUserInfo();
         System.out.println(s);
     }
+
+    /**
+     * 测试07
+     */
+    @Test
+    public void test7_forAware(){
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring.xml");
+
+        UserService userService = context.getBean("userService",UserService.class);
+        String res = userService.queryUserInfo();
+        System.out.println(res);
+        System.out.println(userService.getBeanName());
+        System.out.println(userService.getApplicationContext());
+        System.out.println(userService.getBeanFactory());
+    }
 }

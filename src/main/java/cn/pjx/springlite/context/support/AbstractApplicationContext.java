@@ -22,13 +22,16 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         // 2.获取BeanFactory
         ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 
-        // 3.在bean实例化前，调用BeanFactoryPostProcessor
+        // 3.添加ApplicationContextAwareProcessor
+        beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+
+        // 4.在bean实例化前，调用BeanFactoryPostProcessor
         invokeBeanFactoryPostProcessors(beanFactory);
 
-        // 4.BeanPostProcessor需要提前于其他Bean,对象实例化之前执行注册操作
+        // 5.BeanPostProcessor需要提前于其他Bean,对象实例化之前执行注册操作
         registerBeanPostProcessors(beanFactory);
 
-        // 5.容器启动时，提前实例化全部单例对象
+        // 6.容器启动时，提前实例化全部单例对象
         beanFactory.preInstantiateSingletons();
     }
 
@@ -37,8 +40,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     protected abstract ConfigurableListableBeanFactory getBeanFactory();
 
     /**
-     * 用户可以自己实现BeanFactoryPostProcessor接口，拿到spring对外暴露的工厂
-     * 就可以对spring中所有bean定义进行一层过滤修改
+     * 用户可以自己实现BeanFactoryPostProcessor接口，拿到spring对外暴露的工厂 就可以对spring中所有bean定义进行一层过滤修改
      *
      * @param beanFactory beanFactory
      */
