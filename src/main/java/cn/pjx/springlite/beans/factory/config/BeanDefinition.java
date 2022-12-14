@@ -9,6 +9,10 @@ import cn.pjx.springlite.beans.PropertyValues;
  */
 public class BeanDefinition {
 
+    private String SCOPE_SINGLETON = ConfigurableBeanFactory.SCOPE_SINGLETON;
+
+    private String SCOPE_PROTOTYPE = ConfigurableBeanFactory.SCOPE_PROTOTYPE;
+
     /**
      * beanClass
      */
@@ -28,6 +32,15 @@ public class BeanDefinition {
      * 销毁方法
      */
     private String destroyMethodName;
+
+    /**
+     * bean实例类型(单例/原型)
+     */
+    private String scope = SCOPE_SINGLETON;
+
+    private boolean singleton = true;
+
+    private boolean prototype = false;
 
     public BeanDefinition(Class beanClass) {
         this.beanClass = beanClass;
@@ -69,5 +82,22 @@ public class BeanDefinition {
 
     public void setDestroyMethodName(String destroyMethodName) {
         this.destroyMethodName = destroyMethodName;
+    }
+
+    public void setScope(String scope) {
+        if (scope == null) {
+            return;
+        }
+        this.scope = scope;
+        this.singleton = SCOPE_SINGLETON.equals(scope);
+        this.prototype = SCOPE_PROTOTYPE.equals(scope);
+    }
+
+    public boolean isSingleton() {
+        return singleton;
+    }
+
+    public boolean isPrototype() {
+        return prototype;
     }
 }

@@ -15,6 +15,8 @@
 - Aware
     - 感知标记性接口,具体的子类定义和实现能感知容器中的相关对象,Spring中有很多类似这样的接口设计,它们的存在类似于标签.
     - 核心的包括:BeanFactoryAware,BeanClassLoaderAware,BeanNameAware,ApplicationContextAware
+- FactoryBean
+    - A
 
 ### 渐进实现过程
 
@@ -45,3 +47,5 @@
 - step06:
     - 做的事情:引入`Aware`接口,以及其实现的子类`BeanFactoryAware`,`ApplicationContextAware`等等.
     - 让用户可以自定义XXXAware类实现`Aware`接口,就能拿到bean所属的一些内部资源,对spring做一些比较深入的操作.
+- step07:
+    - 做的事情:引入`FactoryBean`,判断对象是单例或原型模式,根据对应的模式创建对象.
