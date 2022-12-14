@@ -1,5 +1,6 @@
 package cn.pjx.springlite.beans.factory.config;
 
+import cn.hutool.core.util.StrUtil;
 import cn.pjx.springlite.beans.PropertyValues;
 
 /**
@@ -9,7 +10,7 @@ import cn.pjx.springlite.beans.PropertyValues;
  */
 public class BeanDefinition {
 
-    private String SCOPE_SINGLETON = ConfigurableBeanFactory.SCOPE_SINGLETON;
+    private final String SCOPE_SINGLETON = ConfigurableBeanFactory.SCOPE_SINGLETON;
 
     private String SCOPE_PROTOTYPE = ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
@@ -85,7 +86,7 @@ public class BeanDefinition {
     }
 
     public void setScope(String scope) {
-        if (scope == null) {
+        if (StrUtil.isEmpty(scope)) {
             return;
         }
         this.scope = scope;

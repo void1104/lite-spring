@@ -11,7 +11,7 @@ public class UserService implements InitializingBean, DisposableBean, BeanFactor
 
     private String username;
 
-    private UserDao userDao;
+    private IUserDao userDao;
 
     private BeanFactory beanFactory;
 

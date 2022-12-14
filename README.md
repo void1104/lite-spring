@@ -15,8 +15,11 @@
 - Aware
     - 感知标记性接口,具体的子类定义和实现能感知容器中的相关对象,Spring中有很多类似这样的接口设计,它们的存在类似于标签.
     - 核心的包括:BeanFactoryAware,BeanClassLoaderAware,BeanNameAware,ApplicationContextAware
-- FactoryBean
-    - A
+- FactoryBean(?一知半解)
+    - 目的：让使用者定义复杂的bean，三方框架就可以在此标准上完成自己服务的接入.
+    - FactoryBean是作为普通bean的一个包装，提供了getObject方法，所有实现了此接口的对象，就可以实现复杂bean的初始化需求了.
+    - MyBatis就是实现了一个MapperFactoryBean / SqlSessionFactoryBean，在getObject方法中提供了SqlSession对执行CRUD方法的操作.
+    - FactoryBean是xml时代的产物，在xml时代，复杂的类要用xml表达就很麻烦，在spring后期更多是@Bean的形式去实现，所以FactoryBean用的就少了，
 
 ### 渐进实现过程
 
@@ -48,4 +51,5 @@
     - 做的事情:引入`Aware`接口,以及其实现的子类`BeanFactoryAware`,`ApplicationContextAware`等等.
     - 让用户可以自定义XXXAware类实现`Aware`接口,就能拿到bean所属的一些内部资源,对spring做一些比较深入的操作.
 - step07:
-    - 做的事情:引入`FactoryBean`,判断对象是单例或原型模式,根据对应的模式创建对象.
+    - 做的事情:引入`FactoryBean`,其作为普通bean的包装类,让三方服务可以按照标准自己接入复杂的bean
+    - 

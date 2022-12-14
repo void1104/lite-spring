@@ -145,16 +145,34 @@ public class ApiTest {
 
     /**
      * 测试07
+     * - 测试一下实现Aware接口，获取bean对应的spring资源.
+     * - 顺便测试一下对象作用域（单例 / 原型）
      */
     @Test
-    public void test7_forAware(){
+    public void test7_forAware() {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring.xml");
 
-        UserService userService = context.getBean("userService",UserService.class);
+        UserService userService = context.getBean("userService", UserService.class);
         String res = userService.queryUserInfo();
         System.out.println(res);
         System.out.println(userService.getBeanName());
         System.out.println(userService.getApplicationContext());
         System.out.println(userService.getBeanFactory());
+
+        UserService userService1 = context.getBean("userService", UserService.class);
+        System.out.println(userService == userService1);
+    }
+
+    /**
+     * 测试08
+     * - 测试一下FactoryBean, 在getObject方法中定义代理类返回.
+     */
+    @Test
+    public void test8_forFactoryBean() {
+        // 1.初始化 BeanFactory
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+
+        UserService userService = applicationContext.getBean("userService", UserService.class);
+        System.out.println("测试结果：" + userService.queryUserInfo());
     }
 }
