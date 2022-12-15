@@ -12,9 +12,4 @@ public interface ConfigurableBeanFactory extends BeanFactory, SingletonBeanRegis
      * 添加bean在spring容器中实例化前后的processor
      */
     void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
-
-    /**
-     * 销毁单例对象
-     */
-    void destroySingletons();
 }

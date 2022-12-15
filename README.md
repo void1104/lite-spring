@@ -52,4 +52,7 @@
     - 让用户可以自定义XXXAware类实现`Aware`接口,就能拿到bean所属的一些内部资源,对spring做一些比较深入的操作.
 - step07:
     - 做的事情:引入`FactoryBean`,其作为普通bean的包装类,让三方服务可以按照标准自己接入复杂的bean
-    - 
+    - 让`AbstractBeanFactory`去继承`FactoryBeanRegistrySupport`, 其获得加载`FactoryBean`的能力.
+    - 在实现复杂对象不方便用xml时,用户就可以自定义实现`FactoryBean#getObject`方法生成复杂实例对象.
+- step08:
+    - 做的事情:引入`Event`,
