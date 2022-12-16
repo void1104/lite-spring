@@ -5,7 +5,7 @@ import cn.pjx.springlite.beans.factory.FactoryBean;
 import cn.pjx.springlite.beans.factory.config.BeanDefinition;
 import cn.pjx.springlite.beans.factory.config.BeanPostProcessor;
 import cn.pjx.springlite.beans.factory.config.ConfigurableBeanFactory;
-import cn.pjx.springlite.beans.util.ClassUtils;
+import cn.pjx.springlite.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -55,4 +55,7 @@
     - 让`AbstractBeanFactory`去继承`FactoryBeanRegistrySupport`, 其获得加载`FactoryBean`的能力.
     - 在实现复杂对象不方便用xml时,用户就可以自定义实现`FactoryBean#getObject`方法生成复杂实例对象.
 - step08:
-    - 做的事情:引入`Event`,
+    - 做的事情:引入`Event`,`EventListener`,`EventPublisher`等接口,基于观察者模式定义了事件,监听者,推送者等.
+    - 在`AbstractApplicationEventMulticaster`中存放所有listener,当event触发时从这个类筛选关心当前事件(即监听器的泛型是当前事件)的监听器进行触发.
+    - 事件的触发api由`AbstractApplicationEventMulticaster`的子类暴露,并且`AbstractApplicationContext`继承该类,拥有触发事件的能力.
+    - 在AbstractApplicationEventMulticaster#refresh方法中, 初始化推送者,初始化所有监听器,触发一些内部默认的Event等等.

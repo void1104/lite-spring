@@ -10,4 +10,10 @@
         <property name="userDao" ref="proxyUserDao"/>
     </bean>
 
+    <bean class="cn.pjx.springlite.event.ContextRefreshedEventListener"/>
+
+    <bean class="cn.pjx.springlite.event.CustomerEventListener"/>
+
+    <bean class="cn.pjx.springlite.event.ContextClosedEventListener"/>
+
 </beans>

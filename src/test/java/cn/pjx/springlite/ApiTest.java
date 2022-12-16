@@ -9,13 +9,13 @@ import cn.pjx.springlite.beans.factory.xml.XmlBeanDefinitionReader;
 import cn.pjx.springlite.common.MyBeanFactoryPostProcessor;
 import cn.pjx.springlite.common.MyBeanPostProcessor;
 import cn.pjx.springlite.context.support.ClassPathXmlApplicationContext;
+import cn.pjx.springlite.event.CustomEvent;
 import org.junit.Test;
 
 public class ApiTest {
 
     /**
-     * 测试01
-     * - 通过工厂去保存/获取单例bean
+     * 测试01 - 通过工厂去保存/获取单例bean
      */
     @Test
     public void test1_forNormalFactory() {
@@ -35,9 +35,7 @@ public class ApiTest {
     }
 
     /**
-     * 测试02
-     * - 实现有参函数实例化Bean
-     * - 使用策略模式引入实例化Bean的方式（CGLIB, JDK）
+     * 测试02 - 实现有参函数实例化Bean - 使用策略模式引入实例化Bean的方式（CGLIB, JDK）
      */
     @Test
     public void test2_forParamConstructor() {
@@ -108,8 +106,7 @@ public class ApiTest {
     }
 
     /**
-     * 测试05 - 2
-     * - 引入了beanFactoryPostProcessor和beanPostProcessor，提供给用户对bean执行自定义操作
+     * 测试05 - 2 - 引入了beanFactoryPostProcessor和beanPostProcessor，提供给用户对bean执行自定义操作
      */
     @Test
     public void test5_forPostProcessor() {
@@ -131,8 +128,7 @@ public class ApiTest {
     }
 
     /**
-     * 测试06
-     * - 引入了InitialBean和DisposableBean
+     * 测试06 - 引入了InitialBean和DisposableBean
      */
     @Test
     public void test6_forInitAndDestroy() {
@@ -144,9 +140,7 @@ public class ApiTest {
     }
 
     /**
-     * 测试07
-     * - 测试一下实现Aware接口，获取bean对应的spring资源.
-     * - 顺便测试一下对象作用域（单例 / 原型）
+     * 测试07 - 测试一下实现Aware接口，获取bean对应的spring资源. - 顺便测试一下对象作用域（单例 / 原型）
      */
     @Test
     public void test7_forAware() {
@@ -164,8 +158,7 @@ public class ApiTest {
     }
 
     /**
-     * 测试08
-     * - 测试一下FactoryBean, 在getObject方法中定义代理类返回.
+     * 测试08 - 测试一下FactoryBean, 在getObject方法中定义代理类返回.
      */
     @Test
     public void test8_forFactoryBean() {
@@ -174,5 +167,14 @@ public class ApiTest {
 
         UserService userService = applicationContext.getBean("userService", UserService.class);
         System.out.println("测试结果：" + userService.queryUserInfo());
+    }
+
+    /**
+     * 测试09
+     */
+    @Test
+    public void test9_forEvent() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.publishEvent(new CustomEvent(applicationContext, 1104L, "success!"));
     }
 }

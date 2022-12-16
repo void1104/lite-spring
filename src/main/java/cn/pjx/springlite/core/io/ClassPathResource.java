@@ -1,7 +1,7 @@
 package cn.pjx.springlite.core.io;
 
 import cn.hutool.core.lang.Assert;
-import cn.pjx.springlite.beans.util.ClassUtils;
+import cn.pjx.springlite.util.ClassUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
