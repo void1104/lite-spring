@@ -76,4 +76,6 @@
     - 做的事情:引入AOP的理念,基于JDK和Cglib2为spring提供切面能力
     - 引入`AspectJ`,在`AspectJExpressionPointcut`封装,并实现了`Pointcut`,`ClassFiler`,`MethodMatcher`等核心接口,使该类拥有了根据表达式确定切点并匹配类#方法的能力
     - 把代理对象,方法拦截器,方法匹配器包装到`AdivisedSupport`里面,使其拥有三者的能力,方便后面`XXXAopProxy`类使用.
-    - `AdvisedSupport`作为`XXXAopProxy`的构造函数入参,在调用getProxy方法时,就可以通过`AdvisedSupport`的能力和Proxy本身的能力返回代理后的对象
+    - `AdvisedSupport`作为`XXXAopProxy`的构造函数入参,在调用getProxy方法时,就可以通过`AdvisedSupport`的能力和Proxy本身的能力返回代理后的对象.
+- step10:
+    - 做的事情:把AOP融入到Spring中, 通过`BeanPostProcessor`把动态代理融入到Bean的生命周期中.

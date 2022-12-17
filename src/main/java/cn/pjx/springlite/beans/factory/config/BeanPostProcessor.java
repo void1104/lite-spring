@@ -3,7 +3,7 @@ package cn.pjx.springlite.beans.factory.config;
 import cn.pjx.springlite.beans.BeanException;
 
 /**
- * 用于修改实例化Bean对象
+ * 用于在调用初始化方法前(这里指用户实现InitializingBean后的自定义初始化方法, 并不是构造函数),修改实例化Bean对象
  */
 public interface BeanPostProcessor {
 

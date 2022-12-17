@@ -29,6 +29,7 @@ public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
 
     /**
      * invoke方法中主要处理匹配的方法后,使用用户自己提供的方法拦截实现,做反射调用methodInterceptor.invoke
+     * - 按照目前的理解, 所有目标对象的方法调用真实路径都会走这个方法
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
