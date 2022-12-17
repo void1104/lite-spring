@@ -1,4 +1,4 @@
-package cn.pjx.springlite;
+package cn.pjx.springlite.ioc;
 
 import java.util.HashMap;
 import java.util.Map;

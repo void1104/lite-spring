@@ -1,11 +1,9 @@
-package cn.pjx.springlite;
+package cn.pjx.springlite.ioc;
 
 import cn.pjx.springlite.beans.BeanException;
 import cn.pjx.springlite.beans.factory.*;
 import cn.pjx.springlite.context.ApplicationContext;
 import cn.pjx.springlite.context.ApplicationContextAware;
-
-import java.util.PrimitiveIterator;
 
 public class UserService implements InitializingBean, DisposableBean, BeanFactoryAware, BeanNameAware, ApplicationContextAware {
 

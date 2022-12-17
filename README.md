@@ -5,6 +5,10 @@
 ### 核心类的解释和作用
 
 - BeanDefinition：spring中bean的定义，存放类的一些基础信息
+    - PropertyValue: 存放在BeanDefinition中的kv对,表示bean的成员属性.
+    - BeanReference
+        - 在初始化解析(xml/注解)拿到BeanDefinition时,如果是引用类型,则封装成BeanReference.
+        - bean引用类型成员属性的封装,在AbstractAutowireCapableBeanFactory#createBean并填充成员属性时, 如果是BeanReference,就也要对该bean进行实例化.
 - BeanFactory：bean工厂类的最上级接口，定义了bean工厂的框架
 - BeanFactoryPostProcessor
     - 由Spring提供的容器扩展机制，允许在Bean注册后但未实例化前，对BeanDefinition进行修改.
@@ -19,7 +23,15 @@
     - 目的：让使用者定义复杂的bean，三方框架就可以在此标准上完成自己服务的接入.
     - FactoryBean是作为普通bean的一个包装，提供了getObject方法，所有实现了此接口的对象，就可以实现复杂bean的初始化需求了.
     - MyBatis就是实现了一个MapperFactoryBean / SqlSessionFactoryBean，在getObject方法中提供了SqlSession对执行CRUD方法的操作.
-    - FactoryBean是xml时代的产物，在xml时代，复杂的类要用xml表达就很麻烦，在spring后期更多是@Bean的形式去实现，所以FactoryBean用的就少了，
+    - FactoryBean是xml时代的产物，在xml时代，复杂的类要用xml表达就很麻烦，在spring后期更多是@Bean的形式去实现，所以FactoryBean用的就少了.
+- Event机制(事件机制)
+    - 用观察者模式实现的一套事件机制,从用户角度看需要做的就是定义自己的XXXEvent类继承ApplicationEvent类,因为广播事件方法的入参就是ApplicationEvent.
+    - AbstractApplicationEventMulticaster: 存放所有监听者,当广播事件时从监听者中筛选对当前时间感兴趣的监听者调用监听方法
+    - XXXListener / XXXEvent: 用户需要自己定义监听者和事件,然后封装一个api去调用AbstractApplicationContext#publishEvent.
+- PointCut,ClassFilter,MethodMatcher
+    - AOP的三大核心接口,作为切点和匹配器当执行切面的时候,筛选得到匹配成功的类#方法,并执行AOP逻辑.
+
+
 
 ### 渐进实现过程
 
@@ -57,5 +69,11 @@
 - step08:
     - 做的事情:引入`Event`,`EventListener`,`EventPublisher`等接口,基于观察者模式定义了事件,监听者,推送者等.
     - 在`AbstractApplicationEventMulticaster`中存放所有listener,当event触发时从这个类筛选关心当前事件(即监听器的泛型是当前事件)的监听器进行触发.
+    - `AbstractApplicationContext`继承`ApplicationEventPublisher`接口,拥有publishEvent的能力.
     - 事件的触发api由`AbstractApplicationEventMulticaster`的子类暴露,并且`AbstractApplicationContext`继承该类,拥有触发事件的能力.
     - 在AbstractApplicationEventMulticaster#refresh方法中, 初始化推送者,初始化所有监听器,触发一些内部默认的Event等等.
+- step09:
+    - 做的事情:引入AOP的理念,基于JDK和Cglib2为spring提供切面能力
+    - 引入`AspectJ`,在`AspectJExpressionPointcut`封装,并实现了`Pointcut`,`ClassFiler`,`MethodMatcher`等核心接口,使该类拥有了根据表达式确定切点并匹配类#方法的能力
+    - 把代理对象,方法拦截器,方法匹配器包装到`AdivisedSupport`里面,使其拥有三者的能力,方便后面`XXXAopProxy`类使用.
+    - `AdvisedSupport`作为`XXXAopProxy`的构造函数入参,在调用getProxy方法时,就可以通过`AdvisedSupport`的能力和Proxy本身的能力返回代理后的对象

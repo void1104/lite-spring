@@ -1,4 +1,4 @@
-package cn.pjx.springlite;
+package cn.pjx.springlite.ioc;
 
 public interface IUserDao {
 

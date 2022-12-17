@@ -17,6 +17,18 @@
     </properties>
 
     <dependencies>
+        <!-- AOP依赖 -->
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <!-- aspectJ表达式能力 -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.7</version>
+        </dependency>
         <!-- 提供类带参数实例化的能力 -->
         <dependency>
             <groupId>cglib</groupId>

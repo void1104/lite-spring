@@ -1,4 +1,4 @@
-package cn.pjx.springlite.event;
+package cn.pjx.springlite.ioc.event;
 
 import cn.pjx.springlite.context.ApplicationListener;
 import cn.pjx.springlite.context.event.ContextRefreshedEvent;

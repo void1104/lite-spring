@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+<!--    <bean id="userDao" class="cn.pjx.springlite.ioc.UserDao" init-method="init" destroy-method="destroy"/>-->
+
+    <bean id="proxyUserDao" class="cn.pjx.springlite.ioc.ProxyBeanFactory"/>
+
+    <bean id="userService" class="cn.pjx.springlite.ioc.UserService">
+        <property name="username" value="10001"/>
+        <property name="userDao" ref="proxyUserDao"/>
+    </bean>
+
+    <bean class="cn.pjx.springlite.ioc.event.ContextRefreshedEventListener"/>
+
+    <bean class="cn.pjx.springlite.ioc.event.CustomerEventListener"/>
+
+    <bean class="cn.pjx.springlite.ioc.event.ContextClosedEventListener"/>
+
+</beans>

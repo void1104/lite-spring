@@ -1,9 +1,7 @@
-package cn.pjx.springlite.event;
+package cn.pjx.springlite.ioc.event;
 
 
 import cn.pjx.springlite.context.ApplicationListener;
-
-import java.util.Date;
 
 public class CustomerEventListener implements ApplicationListener<CustomEvent> {
 

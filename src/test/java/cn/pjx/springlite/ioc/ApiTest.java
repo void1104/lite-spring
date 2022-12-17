@@ -1,16 +1,19 @@
-package cn.pjx.springlite;
+package cn.pjx.springlite.ioc;
 
+import cn.pjx.springlite.aop.aspectj.AspectJExpressionPointcut;
 import cn.pjx.springlite.beans.PropertyValue;
 import cn.pjx.springlite.beans.PropertyValues;
 import cn.pjx.springlite.beans.factory.config.BeanDefinition;
 import cn.pjx.springlite.beans.factory.config.BeanReference;
 import cn.pjx.springlite.beans.factory.support.DefaultListableBeanFactory;
 import cn.pjx.springlite.beans.factory.xml.XmlBeanDefinitionReader;
-import cn.pjx.springlite.common.MyBeanFactoryPostProcessor;
-import cn.pjx.springlite.common.MyBeanPostProcessor;
+import cn.pjx.springlite.ioc.common.MyBeanFactoryPostProcessor;
+import cn.pjx.springlite.ioc.common.MyBeanPostProcessor;
 import cn.pjx.springlite.context.support.ClassPathXmlApplicationContext;
-import cn.pjx.springlite.event.CustomEvent;
+import cn.pjx.springlite.ioc.event.CustomEvent;
 import org.junit.Test;
+
+import java.lang.reflect.Method;
 
 public class ApiTest {
 
@@ -85,7 +88,7 @@ public class ApiTest {
 
         // 2.手动读取配置文件
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
-        reader.loadBeanDefinitions("classpath:spring.xml");
+        reader.loadBeanDefinitions("classpath:spring-ioc.xml");
 
         UserService userService = beanFactory.getBean("userService", UserService.class);
         String s = userService.queryUserInfo();
@@ -99,7 +102,7 @@ public class ApiTest {
      */
     @Test
     public void test5_forContext() {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-ioc.xml");
 
         UserService userService = context.getBean("userService", UserService.class);
         String s = userService.queryUserInfo();
@@ -113,7 +116,7 @@ public class ApiTest {
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
-        reader.loadBeanDefinitions("classpath:spring.xml");
+        reader.loadBeanDefinitions("classpath:spring-ioc.xml");
 
         MyBeanFactoryPostProcessor p1 = new MyBeanFactoryPostProcessor();
         p1.postProcessBeanFactory(beanFactory);
@@ -132,7 +135,7 @@ public class ApiTest {
      */
     @Test
     public void test6_forInitAndDestroy() {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-ioc.xml");
 
         UserService userService = context.getBean("userService", UserService.class);
         String s = userService.queryUserInfo();
@@ -144,7 +147,7 @@ public class ApiTest {
      */
     @Test
     public void test7_forAware() {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-ioc.xml");
 
         UserService userService = context.getBean("userService", UserService.class);
         String res = userService.queryUserInfo();
@@ -163,7 +166,7 @@ public class ApiTest {
     @Test
     public void test8_forFactoryBean() {
         // 1.初始化 BeanFactory
-        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-ioc.xml");
 
         UserService userService = applicationContext.getBean("userService", UserService.class);
         System.out.println("测试结果：" + userService.queryUserInfo());
@@ -174,7 +177,7 @@ public class ApiTest {
      */
     @Test
     public void test9_forEvent() {
-        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-ioc.xml");
         applicationContext.publishEvent(new CustomEvent(applicationContext, 1104L, "success!"));
     }
 }
