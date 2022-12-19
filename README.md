@@ -30,6 +30,15 @@
     - XXXListener / XXXEvent: 用户需要自己定义监听者和事件,然后封装一个api去调用AbstractApplicationContext#publishEvent.
 - PointCut,ClassFilter,MethodMatcher
     - AOP的三大核心接口,作为切点和匹配器当执行切面的时候,筛选得到匹配成功的类#方法,并执行AOP逻辑.
+- AOP名词解释
+    - Advice(通知): 实际的功能内容,例如日志,事务,校验等, 其说明了干什么和什么时候干(什么时候通过before,after,around辨别)
+    - Pointcut(切入点): 说明了在哪干(指定类或方法的范围), 其类似于匹配器的功能,继承了ClassFilter和MethodMatcher.
+    - Aspect(切面): 切面 = 通知 + 切入点
+- Spring-AOP模块名词解释
+  - Advisor: 对Advice的一层封装,等于是织入功能的调用者.
+  - MethodXXXAdviceInterceptor: 继承MethodInterceptor,作为Advice的适配器,内部封装XXXAdvice的增强逻辑和原方法的调用, 作为Advice和AopProxy的桥梁.
+  - AdvisedSupport: 聚合了目标对象(targetSource),方法拦截器(MethodInterceptor),方法匹配器(MethodMatcher),后面方便传给`JdkAopProxy`和`CglibAopProxy`使用.
+  - DefaultAdvisorAutoProxyCreator:其继承了InstantiationAwareBeanPostProcessor和BeanFactoryAware,在容器初始化时,它被自动装配工厂依赖,在createBean的流程中被调用执行bean代理逻辑.
 
 
 
@@ -74,8 +83,13 @@
     - 在AbstractApplicationEventMulticaster#refresh方法中, 初始化推送者,初始化所有监听器,触发一些内部默认的Event等等.
 - step09:
     - 做的事情:引入AOP的理念,基于JDK和Cglib2为spring提供切面能力
-    - 引入`AspectJ`,在`AspectJExpressionPointcut`封装,并实现了`Pointcut`,`ClassFiler`,`MethodMatcher`等核心接口,使该类拥有了根据表达式确定切点并匹配类#方法的能力
+    - 引入`AspectJ`,在`AspectJExpressionPointcut`封装,并实现了`Pointcut`,`ClassFiler`,`MethodMatcher`等核心接口,使该类拥有了根据表达式确定切点的能力
     - 把代理对象,方法拦截器,方法匹配器包装到`AdivisedSupport`里面,使其拥有三者的能力,方便后面`XXXAopProxy`类使用.
     - `AdvisedSupport`作为`XXXAopProxy`的构造函数入参,在调用getProxy方法时,就可以通过`AdvisedSupport`的能力和Proxy本身的能力返回代理后的对象.
 - step10:
     - 做的事情:把AOP融入到Spring中, 通过`BeanPostProcessor`把动态代理融入到Bean的生命周期中.
+    - 引入了`AspectJExpressionPointcutAdvisor`类,其聚合了`AspectJExpressionPointcut`和`Advisor`的能力,拥有制定切入点(匹配器)和通知的能力.
+    - 在`AbstractAutowireCapableBeanFactory#createBean`流程的最开头加入`resolveBeforeInstantiation`, 判断当前对象是否需要代理.
+    - 在BeanPostProcessor池中找到`DefaultAdvisorAutoProxyCreator`,调用其`postProcessBeforeInstantiation`方法,方法中通过`AspectJExpressionPointcutAdvisor`制定的切面去匹配且织入通知(执行代理逻辑),并返回代理对象
+    - 代理对象的生成由`JdkAopProxy`或`CglibAopProxy`执行,creator会向其传入AdviceSupport,方便其针对匹配切面范围内的方法进行增强代理.
+    - 代理生成的对象就不会再执行后面的`createaBeanInstance`,`applyPropertyValue`,`beforeXXX`和`invokeInitMethod`操作了,只需要执行一下`AfterXXX`操作.

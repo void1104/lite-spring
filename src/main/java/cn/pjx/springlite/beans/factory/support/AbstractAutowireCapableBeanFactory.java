@@ -6,10 +6,7 @@ import cn.pjx.springlite.beans.BeanException;
 import cn.pjx.springlite.beans.PropertyValue;
 import cn.pjx.springlite.beans.PropertyValues;
 import cn.pjx.springlite.beans.factory.*;
-import cn.pjx.springlite.beans.factory.config.AutowireCapableBeanFactory;
-import cn.pjx.springlite.beans.factory.config.BeanDefinition;
-import cn.pjx.springlite.beans.factory.config.BeanPostProcessor;
-import cn.pjx.springlite.beans.factory.config.BeanReference;
+import cn.pjx.springlite.beans.factory.config.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -30,10 +27,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) {
         Object bean = null;
         try {
+            // 判断是否返回代理Bean对象
+            bean = resolveBeforeInstantiation(beanName, beanDefinition);
+            if (null != bean) {
+                return bean;
+            }
+            // 实例化bean
             bean = createBeanInstance(beanDefinition, args);
             // 给Bean填充属性
             applyPropertyValue(beanName, bean, beanDefinition);
-            // 执行bean的初始化方法 和 BeanPostProcessor的前置和后置方法
+            // 执行bean的自定义初始化方法 和 BeanPostProcessor的前置和后置方法
             initializeBean(beanName, bean, beanDefinition);
         } catch (Exception e) {
             throw new BeanException("create bean:[" + beanName + "] failed", e);
@@ -45,6 +48,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         // 如果是单例,则注册单例到注册中心
         if (beanDefinition.isSingleton()) {
             registerSingleton(beanName, bean);
+        }
+        return bean;
+    }
+
+    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {
+        Object bean = applyBeanPostProcessorsBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
+        // 如果代理bean生成了, 跳过大部分流程, 只调用beanPostProcessor
+        // TODO 这里有一个问题,对于代理对象,前置和初始化方法会失效,且无法对成员变量进行填充, 这里待深入研究.
+        if (null != bean) {
+            bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
         }
         return bean;
     }
@@ -150,6 +163,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
     }
 
+    /**
+     * 将实现了DisposableBean接口的bean注册到DefaultSingletonBeanRegistry中,当spring进入生命销毁周期时,执行对应的destroy方法.
+     */
     protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
         // 非Singleton类型的Bean不执行销毁方法
         if (!beanDefinition.isSingleton()) {
@@ -158,6 +174,19 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
             registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanDefinition));
         }
+    }
+
+    /**
+     * 如果bean实现了InstantiationAwareBeanPostProcessor接口,调用其postProcessBeforeInstantiation方法
+     */
+    protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
+            if (processor instanceof InstantiationAwareBeanPostProcessor) {
+                Object result = ((InstantiationAwareBeanPostProcessor) processor).postProcessBeforeInstantiation(beanClass, beanName);
+                if (null != result) return result;
+            }
+        }
+        return null;
     }
 
     @Override

@@ -2,7 +2,7 @@ package cn.pjx.springlite.aop.aspectj;
 
 import cn.pjx.springlite.aop.ClassFilter;
 import cn.pjx.springlite.aop.MethodMatcher;
-import cn.pjx.springlite.aop.PointCut;
+import cn.pjx.springlite.aop.Pointcut;
 import org.aspectj.weaver.tools.PointcutExpression;
 import org.aspectj.weaver.tools.PointcutParser;
 import org.aspectj.weaver.tools.PointcutPrimitive;
@@ -16,7 +16,7 @@ import java.util.Set;
  * - 通过协议好的表达式实例化Pointcut, 确定好aop要切入的点
  * - 并且提供了对类和方法匹配是否在切点范围的能力.
  */
-public class AspectJExpressionPointcut implements PointCut, ClassFilter, MethodMatcher {
+public class AspectJExpressionPointcut implements Pointcut, ClassFilter, MethodMatcher {
 
     private static final Set<PointcutPrimitive> SUPPORTED_PRIMITIVES = new HashSet<>();
 

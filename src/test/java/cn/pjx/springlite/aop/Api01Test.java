@@ -6,11 +6,12 @@ import cn.pjx.springlite.aop.bean.IUserService;
 import cn.pjx.springlite.aop.bean.UserServiceInterceptor;
 import cn.pjx.springlite.aop.framework.Cglib2AopProxy;
 import cn.pjx.springlite.aop.framework.JdkDynamicAopProxy;
+import cn.pjx.springlite.context.support.ClassPathXmlApplicationContext;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
 
-public class ApiTest {
+public class Api01Test {
 
     /**
      * 单独测试AspectJ匹配类的能力.
@@ -27,7 +28,7 @@ public class ApiTest {
     }
 
     /**
-     * 单独测试JDK静态代理对象
+     * 单独测试(JDK/Cglib)生成代理对象
      */
     @Test
     public void test_dynamic() {
