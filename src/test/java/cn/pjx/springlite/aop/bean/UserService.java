@@ -4,8 +4,6 @@ import java.util.Random;
 
 public class UserService implements IUserService {
 
-    public UserDao userDao;
-
     public String queryUserInfo() {
         try {
             Thread.sleep(new Random(1).nextInt(100));

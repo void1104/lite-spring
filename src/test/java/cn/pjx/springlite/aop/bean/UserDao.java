@@ -1,5 +1,8 @@
 package cn.pjx.springlite.aop.bean;
 
+import cn.pjx.springlite.stereotype.Component;
+
+
 public class UserDao {
 
     private String username;

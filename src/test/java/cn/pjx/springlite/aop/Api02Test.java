@@ -2,10 +2,7 @@ package cn.pjx.springlite.aop;
 
 import cn.pjx.springlite.aop.aspectj.AspectJExpressionPointcut;
 import cn.pjx.springlite.aop.aspectj.AspectJExpressionPointcutAdvisor;
-import cn.pjx.springlite.aop.bean.IUserService;
-import cn.pjx.springlite.aop.bean.UserService;
-import cn.pjx.springlite.aop.bean.UserServiceBeforeAdvice;
-import cn.pjx.springlite.aop.bean.UserServiceInterceptor;
+import cn.pjx.springlite.aop.bean.*;
 import cn.pjx.springlite.aop.framework.ProxyFactory;
 import cn.pjx.springlite.aop.framework.adapter.MethodBeforeAdviceInterceptor;
 import cn.pjx.springlite.context.support.ClassPathXmlApplicationContext;
@@ -78,5 +75,18 @@ public class Api02Test {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-aop.xml");
         IUserService userService = context.getBean("userService", IUserService.class);
         System.out.println("测试结果: " + userService.queryUserInfo());
+    }
+
+    /**
+     * 测试实现扫描注解实现类的注册和属性值占位符填充
+     */
+    @Test
+    public void test_scanBeanByAnnotation() {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-scan.xml");
+        UserDao userDao = context.getBean("userDao", UserDao.class);
+        System.out.println("测试结果: " + userDao.getUsername());
+        System.out.println("测试结果: " + userDao.getPassword());
+        GoodsDao goodsDao = context.getBean("goodsDao", GoodsDao.class);
+        System.out.println("测试结果: " + goodsDao.getGood());
     }
 }
