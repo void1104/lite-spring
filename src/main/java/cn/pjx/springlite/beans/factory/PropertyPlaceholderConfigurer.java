@@ -50,7 +50,7 @@ public class PropertyPlaceholderConfigurer implements BeanFactoryPostProcessor {
                         String propKey = strVal.substring(startIdx + 2, stopIdx);
                         String propVal = properties.getProperty(propKey);
                         buffer.replace(startIdx, stopIdx + 1, propVal);
-                        // TODO 替换实际的值, 这里不会出现重复的propertyValue吗?
+                        // 替换实际的值,这里会出现重复的propertyValue, 但解析的时候会取最后一个value,也就是这里add进去的
                         propertyValues.addPropertyValue(new PropertyValue(propertyValue.getName(), buffer.toString()));
                     }
                 }

@@ -93,3 +93,6 @@
     - 在BeanPostProcessor池中找到`DefaultAdvisorAutoProxyCreator`,调用其`postProcessBeforeInstantiation`方法,方法中通过`AspectJExpressionPointcutAdvisor`制定的切面去匹配且织入通知(执行代理逻辑),并返回代理对象
     - 代理对象的生成由`JdkAopProxy`或`CglibAopProxy`执行,creator会向其传入AdviceSupport,方便其针对匹配切面范围内的方法进行增强代理.
     - 代理生成的对象就不会再执行后面的`createaBeanInstance`,`applyPropertyValue`,`beforeXXX`和`invokeInitMethod`操作了,只需要执行一下`AfterXXX`操作.
+- step11:
+    - 做的事情:实现扫描器,给定包的路径,其会扫描包下含有@Component的类,并注册到BeanDefinitionRegistry
+    - 引入了`ClassPathBeanDefinitionScanner`,其扫描并解析注解,

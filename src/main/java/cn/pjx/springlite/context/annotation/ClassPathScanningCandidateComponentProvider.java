@@ -19,7 +19,7 @@ public class ClassPathScanningCandidateComponentProvider {
     public Set<BeanDefinition> findCandidateComponents(String basePackage) {
         Set<BeanDefinition> candidates = new LinkedHashSet<>();
         Set<Class<?>> classes = ClassUtil.scanPackageByAnnotation(basePackage, Component.class);
-        // TODO 这里beanDefinition的初始化会少了很多信息
+        // 这里beanDefinition的初始化会少很多信息,例如initMethod,destroyMethod,beanScope等等,都需要通过注解的方式补上.
         for (Class<?> clazz : classes) {
             candidates.add(new BeanDefinition(clazz));
         }
