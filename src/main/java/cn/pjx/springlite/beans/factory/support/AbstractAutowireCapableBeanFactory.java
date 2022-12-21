@@ -34,6 +34,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             }
             // 实例化bean
             bean = createBeanInstance(beanDefinition, args);
+            // 在设置Bean属性之前,允许BeanPostProcessor,修改属性值
+            applyBeanPostProcessorsBeforeApplyingPropertyValues(bean, beanDefinition);
             // 给Bean填充属性
             applyPropertyValue(beanName, bean, beanDefinition);
             // 执行bean的自定义初始化方法 和 BeanPostProcessor的前置和后置方法
@@ -52,6 +54,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return bean;
     }
 
+    /**
+     * 针对代理对象的初始化方法
+     *
+     * @param beanName       beanName
+     * @param beanDefinition beanDefinition
+     * @return after proxy bean
+     */
     protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {
         Object bean = applyBeanPostProcessorsBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
         // 如果代理bean生成了, 跳过大部分流程, 只调用beanPostProcessor
@@ -60,6 +69,46 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
         }
         return bean;
+    }
+
+    /**
+     * 通过实例化策略实例化bean
+     *
+     * @param beanDefinition bean定义
+     * @param args           构造函数参数
+     * @return 实例化的bean
+     */
+    protected Object createBeanInstance(BeanDefinition beanDefinition, Object[] args) {
+        Constructor constructorToUse = null;
+        Class<?> beanClass = beanDefinition.getBeanClass();
+        // \获取bean的所有构造函数，根据参数的长度进行匹配（简化版）
+        Constructor<?>[] declaredConstructors = beanClass.getDeclaredConstructors();
+        for (Constructor ctor : declaredConstructors) {
+            if (null != args && ctor.getParameterTypes().length == args.length) {
+                constructorToUse = ctor;
+                break;
+            }
+        }
+        return instantiationStrategy.instantiate(beanDefinition, constructorToUse, args);
+    }
+
+    /**
+     * 在设置 Bean 属性之前,允许 BeanPostProcessor修改成员变量值,主要用于依赖注入.
+     *
+     * @param bean           bean
+     * @param beanDefinition beanDefinition
+     */
+    protected void applyBeanPostProcessorsBeforeApplyingPropertyValues(Object bean, BeanDefinition beanDefinition) {
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+                PropertyValues pvs = ((InstantiationAwareBeanPostProcessor) beanPostProcessor).postProcessPropertyValues(beanDefinition.getPropertyValues(), bean);
+                if (null != pvs) {
+                    for (PropertyValue propertyValue : pvs.getPropertyValues()) {
+                        beanDefinition.getPropertyValues().addPropertyValue(propertyValue);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -89,27 +138,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
     }
 
-    /**
-     * 通过实例化策略实例化bean
-     *
-     * @param beanDefinition bean定义
-     * @param args           构造函数参数
-     * @return 实例化的bean
-     */
-    protected Object createBeanInstance(BeanDefinition beanDefinition, Object[] args) {
-        Constructor constructorToUse = null;
-        Class<?> beanClass = beanDefinition.getBeanClass();
-        // \获取bean的所有构造函数，根据参数的长度进行匹配（简化版）
-        Constructor<?>[] declaredConstructors = beanClass.getDeclaredConstructors();
-        for (Constructor ctor : declaredConstructors) {
-            if (null != args && ctor.getParameterTypes().length == args.length) {
-                constructorToUse = ctor;
-                break;
-            }
-        }
-        return instantiationStrategy.instantiate(beanDefinition, constructorToUse, args);
-    }
-
     public InstantiationStrategy getInstantiationStrategy() {
         return this.instantiationStrategy;
     }
@@ -118,6 +146,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         this.instantiationStrategy = instantiationStrategy;
     }
 
+    /**
+     * 实例化Bean的方法, 执行顺序:beforeBeanProcess -> invokeInit -> afterBeanProcess
+     *
+     * @param beanName       beanName
+     * @param bean           bean
+     * @param beanDefinition beanDefinition
+     * @return after all process bean
+     */
     private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
         // invokeAwareMethods
         if (bean instanceof Aware) {
@@ -141,13 +177,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             throw new BeanException("Invocation of init method of bean[" + beanName + "] failed", e);
         }
 
-        // 2.执行after处理
+        // 3.执行after处理
         wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
         return wrappedBean;
     }
 
     /**
-     * 由Spring托管的Bean对象初始化防范
+     * 由Spring托管的Bean对象初始化方法,类似于bean的构造函数,不过是交给spring托管的
+     *
+     * @param bean           bean
+     * @param beanDefinition beanDefinition
      */
     private void invokeInitMethod(Object bean, BeanDefinition beanDefinition) throws Exception {
         // 实现了InitializingBean接口，才调用初始化方法
@@ -165,6 +204,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     /**
      * 将实现了DisposableBean接口的bean注册到DefaultSingletonBeanRegistry中,当spring进入生命销毁周期时,执行对应的destroy方法.
+     *
+     * @param beanName       beanName
+     * @param bean           bean
+     * @param beanDefinition beanDefinition
      */
     protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
         // 非Singleton类型的Bean不执行销毁方法
@@ -177,7 +220,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     /**
-     * 如果bean实现了InstantiationAwareBeanPostProcessor接口,调用其postProcessBeforeInstantiation方法
+     * 如果bean实现了InstantiationAwareBeanPostProcessor接口,调用其postProcessBeforeInstantiation方法.
+     * 这里主要是针对bean的实例化动作,主要应用场景的aop下的类代理
+     *
+     * @param beanClass beanClass
+     * @param beanName  beanName
+     * @return after process bean
      */
     protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
         for (BeanPostProcessor processor : getBeanPostProcessors()) {

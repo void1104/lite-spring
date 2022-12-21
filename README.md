@@ -71,6 +71,7 @@
 - step06:
     - 做的事情:引入`Aware`接口,以及其实现的子类`BeanFactoryAware`,`ApplicationContextAware`等等.
     - 让用户可以自定义XXXAware类实现`Aware`接口,就能拿到bean所属的一些内部资源,对spring做一些比较深入的操作.
+    - 通过`BeanPostProcessor`实现,当createBean时都会调用xxxAware#setxxx方法,使类拿到对应的spring资源.
 - step07:
     - 做的事情:引入`FactoryBean`,其作为普通bean的包装类,让三方服务可以按照标准自己接入复杂的bean
     - 让`AbstractBeanFactory`去继承`FactoryBeanRegistrySupport`, 其获得加载`FactoryBean`的能力.
@@ -95,4 +96,13 @@
     - 代理生成的对象就不会再执行后面的`createaBeanInstance`,`applyPropertyValue`,`beforeXXX`和`invokeInitMethod`操作了,只需要执行一下`AfterXXX`操作.
 - step11:
     - 做的事情:实现扫描器,给定包的路径,其会扫描包下含有@Component的类,并注册到BeanDefinitionRegistry
+    - 引入了`PropertyPlaceholderConfigurer`, 其实现了`BeanFactoryProcessor`,在实例化所有bean之前,会先解析并将其BeanDefinition中占位符字段替换为真实的内容
     - 引入了`ClassPathBeanDefinitionScanner`,其扫描并解析注解,
+- step12:
+    - 做的事情:完善扫描的能力,实现成员(值/引用)变量属性注入.
+    - 在`PropertyPlaceholderConfigurer`中加入`StringValueResolver`的注册,在解析xml中${}的同时,把字符串解析器注册到`AbstractBeanFactory`.
+    - 引入了`AutowiredAnnotationBeanPostProcessor`
+      - 实现`BeanFactoryAware`接口, 所以能通过beanFactory拿到`StringValueResovler`,调用resolveEmbeddedValue方法解析注解.
+      - 实现`BeanPostProcessor`接口, 所以能在每个bean实例化之前,解析@Autowired,@Qualified,@Value等注解实现依赖注入.
+    - 在`ClassPathBeanDefinitionScanner`中增加了注册`AutowiredAnnotationBeanPostProcessor`的逻辑,所以在refresh的最开始就会注册这个BeanPostProcessor
+    - 在`AbstactAutowireCapableFactory#createBean`中新增处理`AutowiredAnnotationBeanPostProcessor`的逻辑.
