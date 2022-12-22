@@ -4,13 +4,16 @@ import java.util.Random;
 
 public class UserService implements IUserService {
 
+    private UserDao userDao;
+
     public String queryUserInfo() {
         try {
             Thread.sleep(new Random(1).nextInt(100));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return "pengjiaxin，1104，深圳";
+//        return "userInfo is:" + userDao.getUsername();
+        return "hello";
     }
 
     public String register(String userName) {

@@ -12,15 +12,18 @@
 
     <bean class="cn.pjx.springlite.aop.framework.autoProxy.DefaultAdvisorAutoProxyCreator"/>
 
-    <bean id="beforeAdvice" class="cn.pjx.springlite.aop.bean.UserServiceBeforeAdvice"/>
+    <!--    <bean id="beforeAdvice" class="cn.pjx.springlite.aop.bean.UserServiceBeforeAdvice"/>-->
 
-    <bean id="methodInterceptor" class="cn.pjx.springlite.aop.framework.adapter.MethodBeforeAdviceInterceptor">
-        <property name="advice" ref="beforeAdvice"/>
-    </bean>
+    <!--    <bean id="methodInterceptor" class="cn.pjx.springlite.aop.framework.adapter.MethodBeforeAdviceInterceptor">-->
+    <!--        <property name="advice" ref="beforeAdvice"/>-->
+    <!--    </bean>-->
+
+    <bean id="userServiceInterceptor" class="cn.pjx.springlite.aop.bean.UserServiceInterceptor"/>
 
     <!-- 配置注入切面bean -->
     <bean id="pointcutAdvisor" class="cn.pjx.springlite.aop.aspectj.AspectJExpressionPointcutAdvisor">
         <property name="expression" value="execution(* cn.pjx.springlite.aop.bean.IUserService.*(..))"/>
-        <property name="advice" ref="methodInterceptor"/>
+<!--        <property name="advice" ref="methodInterceptor"/>-->
+        <property name="advice" ref="userServiceInterceptor"/>
     </bean>
 </beans>

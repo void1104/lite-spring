@@ -71,7 +71,6 @@
 - step06:
     - 做的事情:引入`Aware`接口,以及其实现的子类`BeanFactoryAware`,`ApplicationContextAware`等等.
     - 让用户可以自定义XXXAware类实现`Aware`接口,就能拿到bean所属的一些内部资源,对spring做一些比较深入的操作.
-    - 通过`BeanPostProcessor`实现,当createBean时都会调用xxxAware#setxxx方法,使类拿到对应的spring资源.
 - step07:
     - 做的事情:引入`FactoryBean`,其作为普通bean的包装类,让三方服务可以按照标准自己接入复杂的bean
     - 让`AbstractBeanFactory`去继承`FactoryBeanRegistrySupport`, 其获得加载`FactoryBean`的能力.
@@ -106,3 +105,7 @@
       - 实现`BeanPostProcessor`接口, 所以能在每个bean实例化之前,解析@Autowired,@Qualified,@Value等注解实现依赖注入.
     - 在`ClassPathBeanDefinitionScanner`中增加了注册`AutowiredAnnotationBeanPostProcessor`的逻辑,所以在refresh的最开始就会注册这个BeanPostProcessor
     - 在`AbstactAutowireCapableFactory#createBean`中新增处理`AutowiredAnnotationBeanPostProcessor`的逻辑.
+- step13:
+    - 做的事情:实现aop代理对象的属性注入
+    - 把原本`AbstactAutowireCapableBeanFactory#createBean`中实例化bean的顺序改动了一下,把代理对象生成一步放到了`postProcessAfterInitialization`中
+    - 也就是把原本未增强过bean实例生成后,再根据生成的bean去生成代理对象,这样代理对象bean的成员对象就是已经注入好的.

@@ -27,11 +27,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) {
         Object bean = null;
         try {
-            // 判断是否返回代理Bean对象
-            bean = resolveBeforeInstantiation(beanName, beanDefinition);
-            if (null != bean) {
-                return bean;
-            }
             // 实例化bean
             bean = createBeanInstance(beanDefinition, args);
             // 在设置Bean属性之前,允许BeanPostProcessor,修改属性值
@@ -39,7 +34,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             // 给Bean填充属性
             applyPropertyValue(beanName, bean, beanDefinition);
             // 执行bean的自定义初始化方法 和 BeanPostProcessor的前置和后置方法
-            initializeBean(beanName, bean, beanDefinition);
+            bean = initializeBean(beanName, bean, beanDefinition);
         } catch (Exception e) {
             throw new BeanException("create bean:[" + beanName + "] failed", e);
         }
@@ -50,23 +45,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         // 如果是单例,则注册单例到注册中心
         if (beanDefinition.isSingleton()) {
             registerSingleton(beanName, bean);
-        }
-        return bean;
-    }
-
-    /**
-     * 针对代理对象的初始化方法
-     *
-     * @param beanName       beanName
-     * @param beanDefinition beanDefinition
-     * @return after proxy bean
-     */
-    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {
-        Object bean = applyBeanPostProcessorsBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
-        // 如果代理bean生成了, 跳过大部分流程, 只调用beanPostProcessor
-        // TODO 这里有一个问题,对于代理对象,前置和初始化方法会失效,且无法对成员变量进行填充, 这里待深入研究.
-        if (null != bean) {
-            bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
         }
         return bean;
     }
@@ -253,7 +231,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Object result = existingBean;
         for (BeanPostProcessor processor : getBeanPostProcessors()) {
             Object current = processor.postProcessAfterInitialization(result, beanName);
-            if (null == current) return result;
+            if (null == current)
+                return result;
             result = current;
         }
         return result;

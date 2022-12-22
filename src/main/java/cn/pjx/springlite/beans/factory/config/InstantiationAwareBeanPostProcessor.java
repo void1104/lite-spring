@@ -18,11 +18,19 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
     Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeanException;
 
     /**
-     * 在 Bean 对象实例化完成后, 设置属性操作之前执行此方法
+     * 在 Bean 对象执行初始化方法之后，执行此方法
      *
-     * @param pvs      bean的成员变量kvs
      * @param bean     bean
      * @param beanName beanName
+     * @return success or not
+     */
+    boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeanException;
+
+    /**
+     * 在 Bean 对象实例化完成后, 设置属性操作之前执行此方法
+     *
+     * @param pvs  bean的成员变量kvs
+     * @param bean bean
      * @return 经处理过成员变量kvs
      */
     PropertyValues postProcessPropertyValues(PropertyValues pvs, Object bean) throws BeanException;

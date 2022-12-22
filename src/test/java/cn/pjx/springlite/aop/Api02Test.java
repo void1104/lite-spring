@@ -73,6 +73,7 @@ public class Api02Test {
     @Test
     public void test_aopWithSpringLifecycle() {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-aop.xml");
+        AspectJExpressionPointcutAdvisor advisor = context.getBean("pointcutAdvisor", AspectJExpressionPointcutAdvisor.class);
         IUserService userService = context.getBean("userService", IUserService.class);
         System.out.println("测试结果: " + userService.queryUserInfo());
     }
