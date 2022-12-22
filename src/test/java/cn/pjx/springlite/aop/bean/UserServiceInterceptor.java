@@ -3,6 +3,9 @@ package cn.pjx.springlite.aop.bean;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
+/**
+ * 自定义的MethodInterceptor
+ */
 public class UserServiceInterceptor implements MethodInterceptor {
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {

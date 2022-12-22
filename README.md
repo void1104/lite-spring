@@ -97,3 +97,20 @@
     - 做的事情:实现简易注解扫描器
     - 引入了`ClassPathBeanDefinitionScanner`扫描器,其根据指定的包路径,扫描并解析注解并注册到BeanDefinitionRegistry.
     - 引入了`PropertyPlaceholderConfigurer`，其是一个BeanFactoryPostProcessor，在bean初始化前会替换其配置的占位符${}为文件里的内容.
+- step12:
+  - 做的事情:完善扫描的能力,实现成员(值/引用)变量属性注入.
+  - 在`PropertyPlaceholderConfigurer`中加入`StringValueResolver`的注册,在解析xml中${}的同时,把字符串解析器注册到`AbstractBeanFactory`.
+  - 引入了`AutowiredAnnotationBeanPostProcessor`
+    - 实现`BeanFactoryAware`接口, 所以能通过beanFactory拿到`StringValueResovler`,调用resolveEmbeddedValue方法解析注解.
+    - 实现`BeanPostProcessor`接口, 所以能在每个bean实例化之前,解析@Autowired,@Qualified,@Value等注解实现依赖注入.
+  - 在`ClassPathBeanDefinitionScanner`中增加了注册`AutowiredAnnotationBeanPostProcessor`的逻辑,所以在refresh的最开始就会注册这个BeanPostProcessor
+  - 在`AbstactAutowireCapableFactory#createBean`中新增处理`AutowiredAnnotationBeanPostProcessor`的逻辑.
+- step13:
+  - 做的事情:实现aop代理对象的属性注入
+  - 把原本`AbstactAutowireCapableBeanFactory#createBean`中实例化bean的顺序改动了一下,把代理对象生成一步放到了`postProcessAfterInitialization`中
+  - 也就是把原本未增强过bean实例生成后,再根据生成的bean去生成代理对象,这样代理对象bean的成员对象就是已经注入好的.
+- step14:
+  - 做的事情:三级缓存解决循环依赖问题.
+  - 三级缓存
+    - 成品对象,半成品对象(未填充属性值),代理对象,分阶段存放对象.
+    - 一,二,三级都能解决,三层是spring的设计思路,且除了ioc还需要满足aop,而spring创建对象的原则就是先普通bean,再代理bean,所以需要三层.

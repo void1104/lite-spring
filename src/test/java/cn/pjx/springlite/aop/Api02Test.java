@@ -73,6 +73,7 @@ public class Api02Test {
     @Test
     public void test_aopWithSpringLifecycle() {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-aop.xml");
+        AspectJExpressionPointcutAdvisor advisor = context.getBean("pointcutAdvisor", AspectJExpressionPointcutAdvisor.class);
         IUserService userService = context.getBean("userService", IUserService.class);
         System.out.println("测试结果: " + userService.queryUserInfo());
     }
@@ -88,5 +89,18 @@ public class Api02Test {
         System.out.println("测试结果: " + userDao.getPassword());
         GoodsDao goodsDao = context.getBean("goodsDao", GoodsDao.class);
         System.out.println("测试结果: " + goodsDao.getGood());
+    }
+
+    /**
+     * 测试完善扫描器,实现@Autowired,@Qualified,@Value的依赖注入
+     */
+    @Test
+    public void test_DependencyInjection() {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-inject.xml");
+        UserDao userDao = context.getBean("user", UserDao.class);
+        System.out.println("测试结果: " + userDao.getUsername());
+        System.out.println("测试结果: " + userDao.getPassword());
+        StoreDao storeDao = context.getBean("store", StoreDao.class);
+        System.out.println("测试结果: " + storeDao.getUser());
     }
 }

@@ -1,6 +1,7 @@
 package cn.pjx.springlite.context.annotation;
 
 import cn.hutool.core.util.StrUtil;
+import cn.pjx.springlite.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import cn.pjx.springlite.beans.factory.config.BeanDefinition;
 import cn.pjx.springlite.beans.factory.config.BeanDefinitionRegistry;
 import cn.pjx.springlite.stereotype.Component;
@@ -31,6 +32,9 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
                 registry.registerBeanDefinition(determineBeanName(beanDefinition), beanDefinition);
             }
         }
+
+        // 注册处理注解的 BeanPostProcessor(@Autowired, @Value), 当refresh方法的预加载逻辑执行时,就会把所有已注册的BeanDefinition都实例化.
+        registry.registerBeanDefinition("internalAutowiredAnnotationProcessor", new BeanDefinition(AutowiredAnnotationBeanPostProcessor.class));
     }
 
     /**

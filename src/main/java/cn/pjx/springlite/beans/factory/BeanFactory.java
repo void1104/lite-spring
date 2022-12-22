@@ -32,4 +32,12 @@ public interface BeanFactory {
      * @return bean实例
      */
     <T> T getBean(String name, Class<T> requiredType) throws BeanException;
+
+    /**
+     * 获取bean实例<泛型>
+     *
+     * @param requiredType 泛型类型
+     * @return bean实例
+     */
+    <T> T getBean(Class<T> requiredType) throws BeanException;
 }
