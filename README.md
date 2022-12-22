@@ -94,5 +94,6 @@
     - 代理对象的生成由`JdkAopProxy`或`CglibAopProxy`执行,creator会向其传入AdviceSupport,方便其针对匹配切面范围内的方法进行增强代理.
     - 代理生成的对象就不会再执行后面的`createaBeanInstance`,`applyPropertyValue`,`beforeXXX`和`invokeInitMethod`操作了,只需要执行一下`AfterXXX`操作.
 - step11:
-    - 做的事情:实现扫描器,给定包的路径,其会扫描包下含有@Component的类,并注册到BeanDefinitionRegistry
-    - 引入了`ClassPathBeanDefinitionScanner`,其扫描并解析注解,
+    - 做的事情:实现简易注解扫描器
+    - 引入了`ClassPathBeanDefinitionScanner`扫描器,其根据指定的包路径,扫描并解析注解并注册到BeanDefinitionRegistry.
+    - 引入了`PropertyPlaceholderConfigurer`，其是一个BeanFactoryPostProcessor，在bean初始化前会替换其配置的占位符${}为文件里的内容.
