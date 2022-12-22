@@ -29,7 +29,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         try {
             // 实例化bean
             bean = createBeanInstance(beanDefinition, args);
-            // 在设置Bean属性之前,允许BeanPostProcessor,修改属性值
+            // 在设置Bean属性之前,允许BeanPostProcessor,修改属性值(这里是处理注解实现依赖注入)
             applyBeanPostProcessorsBeforeApplyingPropertyValues(bean, beanDefinition);
             // 给Bean填充属性
             applyPropertyValue(beanName, bean, beanDefinition);

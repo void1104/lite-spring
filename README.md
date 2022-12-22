@@ -109,3 +109,8 @@
     - 做的事情:实现aop代理对象的属性注入
     - 把原本`AbstactAutowireCapableBeanFactory#createBean`中实例化bean的顺序改动了一下,把代理对象生成一步放到了`postProcessAfterInitialization`中
     - 也就是把原本未增强过bean实例生成后,再根据生成的bean去生成代理对象,这样代理对象bean的成员对象就是已经注入好的.
+- step14:
+    - 做的事情:三级缓存解决循环依赖问题.
+    - 三级缓存
+      - 成品对象,半成品对象(未填充属性值),代理对象,分阶段存放对象.
+      - 一,二,三级都能解决,三层是spring的设计思路,且除了ioc还需要满足aop,而spring创建对象的原则就是先普通bean,再代理bean,所以需要三层.
