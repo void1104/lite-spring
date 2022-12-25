@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+    <bean id="husband" class="cn.pjx.springlite.design.Husband">
+        <property name="wife" ref="wife"/>
+    </bean>
+
+    <bean id="wife" class="cn.pjx.springlite.design.Wife">
+        <property name="husband" ref="husband"/>
+    </bean>
+
+    <!--    <bean id="husbandMother" class="cn.pjx.springlite.design.HusbandMother"/>-->
+
+    <!--    &lt;!&ndash; AOP 配置，验证三级缓存 &ndash;&gt;-->
+    <!--    <bean class="cn.pjx.springlite.aop.framework.autoProxy.DefaultAdvisorAutoProxyCreator"/>-->
+
+    <!--    <bean id="beforeAdvice" class="cn.pjx.springlite.design.SpouseAdvice"/>-->
+
+    <!--    <bean id="methodInterceptor" class="cn.pjx.springlite.aop.framework.adapter.MethodBeforeAdviceInterceptor">-->
+    <!--        <property name="advice" ref="beforeAdvice"/>-->
+    <!--    </bean>-->
+
+    <!--    <bean id="pointcutAdvisor" class="cn.pjx.springlite.aop.aspectj.AspectJExpressionPointcutAdvisor">-->
+    <!--        <property name="expression" value="execution(* cn.pjx.springlite.design.Wife.*(..))"/>-->
+    <!--        <property name="advice" ref="methodInterceptor"/>-->
+    <!--    </bean>-->
+</beans>

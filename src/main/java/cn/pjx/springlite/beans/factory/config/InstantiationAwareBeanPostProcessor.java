@@ -34,4 +34,15 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
      * @return 经处理过成员变量kvs
      */
     PropertyValues postProcessPropertyValues(PropertyValues pvs, Object bean) throws BeanException;
+
+    /**
+     * 获取二级缓存中提前暴露的bean
+     *
+     * @param bean     bean
+     * @param beanName beanName
+     * @return 提前暴露(未完成实例化完成)的bean
+     */
+    default Object getEarlyBeanReference(Object bean, String beanName) {
+        return bean;
+    }
 }

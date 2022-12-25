@@ -13,6 +13,9 @@ import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 融入Bean生命周期的自动代理创建者
@@ -20,6 +23,11 @@ import java.util.Collection;
 public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPostProcessor, BeanFactoryAware {
 
     private DefaultListableBeanFactory beanFactory;
+
+    /**
+     * 存放提前暴露的代理对象的className,标识这个对象已经放入三级缓存中,就不用重复执行wrapIfNecessary逻辑了.
+     */
+    private final Set<String> earlyProxyReferences = Collections.synchronizedSet(new HashSet<>());
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeanException {
@@ -50,6 +58,13 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeanException {
+        if (!earlyProxyReferences.contains(beanName)) {
+            return wrapIfNecessary(bean);
+        }
+        return bean;
+    }
+
+    protected Object wrapIfNecessary(Object bean) {
         // aop模块的基础类,则不需要执行代理逻辑
         if (isInfrastructureClass(bean.getClass()))
             return bean;
@@ -76,6 +91,13 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
         }
         return bean;
     }
+
+    @Override
+    public Object getEarlyBeanReference(Object bean, String beanName) {
+        earlyProxyReferences.add(beanName);
+        return wrapIfNecessary(bean);
+    }
+
 
     @Override
     public PropertyValues postProcessPropertyValues(PropertyValues pvs, Object bean) throws BeanException {
